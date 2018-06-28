@@ -16,15 +16,17 @@
 
 package example;
 
+import org.springframework.cloud.function.adapter.aws.SpringFunctionInitializer;
+import reactor.core.publisher.Mono;
 import java.util.logging.Logger;
 
 /**
  * @author Dave Syer
  *
  */
-public class Handler {
+public class Main extends SpringFunctionInitializer {
 
-    private final static Logger logger = Logger.getLogger(Handler.class.getName());
+    private final static Logger logger = Logger.getLogger(Main.class.getName());
 
     public static native void start();
 
@@ -37,9 +39,11 @@ public class Handler {
         System.loadLibrary("Hello");
         logger.info("Loaded Hello Golang lib, invoking Go for listening on Lambda Handler");
         start();
+        Main main = new Main();
+        main.initialize();
         while (true) {
             String request = readRequest();
-            String response = request.toUpperCase();
+            String response = (String) Mono.from(main.apply(Mono.just(request))).block();
             writeResponse(response);
         }
     }

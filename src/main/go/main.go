@@ -54,8 +54,8 @@ func communicateJava(input interface{}) (interface{}, error) {
 	return resp, nil
 }
 
-//export Java_example_Handler_start
-func Java_example_Handler_start(env *C.JNIEnv, clazz C.jclass) {
+//export Java_example_Main_start
+func Java_example_Main_start(env *C.JNIEnv, clazz C.jclass) {
 	log.SetPrefix("GO - ")
 
 	go func() {
@@ -63,15 +63,15 @@ func Java_example_Handler_start(env *C.JNIEnv, clazz C.jclass) {
 	}()
 }
 
-//export Java_example_Handler_writeResponse
-func Java_example_Handler_writeResponse(env *C.JNIEnv, clazz C.jclass, input C.jstring) {
+//export Java_example_Main_writeResponse
+func Java_example_Main_writeResponse(env *C.JNIEnv, clazz C.jclass, input C.jstring) {
 	a := C.convert_to_cstring(env, input)
 	b := C.GoString(a)
 	javaResponse <- b
 }
 
-//export Java_example_Handler_readRequest
-func Java_example_Handler_readRequest(env *C.JNIEnv, clazz C.jclass) C.jstring {
+//export Java_example_Main_readRequest
+func Java_example_Main_readRequest(env *C.JNIEnv, clazz C.jclass) C.jstring {
 	input := <-goRequest
 	cstr := C.CString(input)
 	cjstring := C.convert_to_jstring(env, cstr)
