@@ -1,0 +1,9 @@
+
+```
+$ go get github.com/aws/aws-lambda-go/lambda
+$ go build  -buildmode=c-shared  -o libHello.so  src/main/go/main.go
+$ mvn package
+$ native-image example.Handler -cp "target/lambda-2.0.0.BUILD-SNAPSHOT-aws.jar" -H:Name=handler -H:+JNI -H:+ReflectionEnabled -H:+ReportUnsupportedElementsAtRuntime -Djava.library.path=. --no-server
+```
+
+Upload the `lambda.zip` to AWS and configure it with a handler "handler" (the binary from the native image generation). Test it. Profit.
